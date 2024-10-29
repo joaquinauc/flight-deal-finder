@@ -4,6 +4,7 @@ from data_manager import DataManager
 from flight_search import FlightSearch
 from datetime import datetime, timedelta
 from flight_data import find_cheapest_flight
+from notification_manager import NotificationManager
 import time
 
 data_manager = DataManager()
@@ -24,7 +25,9 @@ date_tomorrow = (today + timedelta(days=1)).strftime("%Y-%m-%d")
 date_after_six_months = (today + timedelta(days=182)).strftime("%Y-%m-%d")
 
 for data in sheet_data:
-    flights = flight_search.get_offers(data["iataCode"], date_tomorrow, date_after_six_months, data["lowestPrice"])
+    flights = flight_search.get_offers(data["iataCode"], date_tomorrow, date_after_six_months)
     cheapest_flight = find_cheapest_flight(flights)
     print(f"Lowest price from {cheapest_flight.origin_airport} to {cheapest_flight.destination_airport}: ${cheapest_flight.price}")
+    notif_manager = NotificationManager(cheapest_flight)
+    notif_manager.send_notification(data["lowestPrice"])
     time.sleep(2)
