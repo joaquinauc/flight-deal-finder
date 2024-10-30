@@ -35,7 +35,7 @@ class FlightSearch:
         print(cities_response["data"][0]["iataCode"])
         return cities_response["data"][0]["iataCode"]
 
-    def get_offers(self, iata_code, from_date, to_date, max_price):
+    def get_offers(self, iata_code, from_date, to_date, is_direct=True):
         self.get_token()
         offers_params = {
             "originLocationCode": "LHR",
@@ -44,8 +44,8 @@ class FlightSearch:
             "returnDate": to_date,
             "adults": 1,
             "currencyCode": "USD",
+            "nonStop": str(is_direct).lower()
         }
         response = requests.get(f"{AMADEUS_ENDPOINT}v2/shopping/flight-offers", headers=self.cities_headers, params=offers_params).json()
+
         return response
-
-
