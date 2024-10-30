@@ -34,16 +34,18 @@ for data in sheet_data:
         if "data" not in flights:
             raise KeyError("No data found in the response.")
         cheapest_flight = find_cheapest_flight(flights)
+        flight_type = "Direct"
     except KeyError:
         flights = flight_search.get_offers(data["iataCode"], date_tomorrow, date_after_six_months, False)
         if "data" in flights:
             cheapest_flight = find_cheapest_flight(flights)
+            flight_type = "Indirect"
     else:
         print(f"No flight data found for {data["iataCode"]}, searching for the next destination...")
         continue
 
     print(f"Lowest price from {cheapest_flight.origin_airport} to {cheapest_flight.destination_airport}: ${cheapest_flight.price}")
     notif_manager = NotificationManager(cheapest_flight, customer_emails)
-    notif_manager.send_notification(data["lowestPrice"])
-    notif_manager.send_emails(data["lowestPrice"])
+    notif_manager.send_notification(data["lowestPrice"], flight_type)
+    notif_manager.send_emails(data["lowestPrice"], flight_type)
     time.sleep(2)
