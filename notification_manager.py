@@ -17,22 +17,22 @@ class NotificationManager:
         self.flight_data = flight_data
         self.emails = emails
 
-    def send_notification(self, lowest_price):
+    def send_notification(self, lowest_price, flight_type):
         if self.flight_data.price != "N/A" and self.flight_data.price < lowest_price:
             client = Client(ACCOUNT_SID, TWILIO_AUTH_TOKEN)
             client.messages.create(
                 from_="whatsapp:+14155238886",
                 body=f"Low price alert! Only ${self.flight_data.price} to fly from {self.flight_data.origin_airport}"
                      f"to {self.flight_data.destination_airport}, on {self.flight_data.out_date} to "
-                     f"{self.flight_data.return_date}.",
+                     f"{self.flight_data.return_date}. ({flight_type} flight.)",
                 to="whatsapp:+5216442460105"
             )
 
-    def send_emails(self, lowest_price):
+    def send_emails(self, lowest_price, flight_type):
         subject = "GET ON VACATION NOW!"
         body = f"Low price alert! Only ${self.flight_data.price} to fly from {self.flight_data.origin_airport}"\
                f"to {self.flight_data.destination_airport}, on {self.flight_data.out_date} to "\
-               f"{self.flight_data.return_date}."
+               f"{self.flight_data.return_date}. ({flight_type} flight.)"
         msg = f"Subject: {subject}\n\n{body}"  # The \n\n is to write the body of the msg, it recognizes it as such.
 
         if self.flight_data.price != "N/A" and self.flight_data.price < lowest_price:
